@@ -20,5 +20,7 @@ namespace _06._09._2
         {
             InitializeComponent();
         }
+
+    
     }
 }
