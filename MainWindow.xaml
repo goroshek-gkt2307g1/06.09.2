@@ -7,49 +7,83 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Window.Resources>
+        <!--градиент текст.полей-->
         <LinearGradientBrush x:Key="OwnBrush">
             <GradientStop Color="Red" Offset="0"/>
             <GradientStop Color="Green" Offset="0.5"/>
             <GradientStop Color="Purple" Offset="1"/>
         </LinearGradientBrush>
-        <!--<Style TargetType="Button">
+
+        <!--cтиль для tb1-->
+        <Style x:Key="FirstTextBoxStyle" TargetType="TextBox">
+            <Setter Property="FontFamily" Value="Arial"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Foreground" Value="DarkBlue"/>
+            <Setter Property="FontWeight" Value="Normal"/>
+        </Style>
+
+        <!--cтиль для tb2-->
+        <Style x:Key="SecondTextBoxStyle" TargetType="TextBox">
+            <Setter Property="FontFamily" Value="Times New Roman"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="Foreground" Value="DarkRed"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+        </Style>
+
+        <Style TargetType="Button" x:Key="AllButtonStyle">
+            <!--базовые настройки-->
+            <Setter Property="Background" Value="LightPink"/>
+
             <Style.Triggers>
-                <DataTrigger Binding="{Binding ElementName=t1, Path=Text}" Value="">
-                    <DataTrigger.Setters>
-                        <Setter Property="IsEnabled" Value="False" />
-                    </DataTrigger.Setters>
-                </DataTrigger>
+                <!--наведение курсором-->
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Foreground" Value="Blue"/>
+                    <Setter Property="FontSize" Value="20"/>
+                    <Setter Property="Background" Value="LightBlue"/>
+                    <Setter Property="Cursor" Value="Hand"/>
+                </Trigger>
+
+                <!--при нажатии-->
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Foreground" Value="Black"/>
+                </Trigger>
             </Style.Triggers>
-        </Style> -->
-        <Style TargetType="Button">
+        </Style>
+
+        <!--кнопка Закрыть, которая зависит от текстбоксов-->
+        <Style TargetType="Button" x:Key="CloseButtonStyle" BasedOn="{StaticResource AllButtonStyle}">
+            <Setter Property="IsEnabled" Value="False"/>
             <Style.Triggers>
-                <MultiTrigger>
-                    <MultiTrigger.Conditions>
-                        <Condition 
-                    </MultiTrigger.Conditions>
-                </MultiTrigger>
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding ElementName=t1, Path=Text.Length}" Value="0"/>
+                        <Condition Binding="{Binding ElementName=t2, Path=Text.Length}" Value="0"/>
+                    </MultiDataTrigger.Conditions>
+                    <Setter Property="IsEnabled" Value="True"/>
+                </MultiDataTrigger>
             </Style.Triggers>
         </Style>
     </Window.Resources>
+
     <StackPanel>
-
         <StackPanel Orientation="Horizontal">
-            <Button x:Name="Open">Открыть</Button>
-            <Button x:Name="Clear">Очистить</Button>
-            <Button x:Name="Close">Закрыть</Button>
+            <Button x:Name="Open" Style="{StaticResource AllButtonStyle}">Открыть</Button>
+            <Button x:Name="Clear" Style="{StaticResource AllButtonStyle}">Очистить</Button>
+            <Button x:Name="Close" Style="{StaticResource CloseButtonStyle}">Закрыть</Button>
 
-            <ComboBox>
-                <ComboBoxItem x:Name="st1">
+            <ComboBox x:Name="styleComboBox" SelectedIndex="0">
+                <ComboBoxItem Tag="{StaticResource FirstTextBoxStyle}">
                     <TextBlock>1 стиль</TextBlock>
                 </ComboBoxItem>
-                <ComboBoxItem>
+                <ComboBoxItem Tag="{StaticResource SecondTextBoxStyle}">
                     <TextBlock>2 стиль</TextBlock>
                 </ComboBoxItem>
             </ComboBox>
         </StackPanel>
 
-        <TextBox x:Name="t1" Background="{StaticResource OwnBrush}" />
-        <TextBox x:Name="t2" Background="{Binding ElementName=t1, Path=Background}"/>
+        <TextBox x:Name="t1" Background="{StaticResource OwnBrush}"
+                 Style="{Binding ElementName=styleComboBox, Path=SelectedItem.Tag}"/>
+        <TextBox x:Name="t2" Background="{Binding ElementName=t1, Path=Background}"
+                 Style="{Binding ElementName=styleComboBox, Path=SelectedItem.Tag}"/>
     </StackPanel>
-    
 </Window>
